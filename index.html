@@ -1,0 +1,21 @@
+<button id="call">Start Call</button>
+<script>
+  document.getElementById('call').onclick = async () => {
+    const res = await fetch('https://dodge-dictionaries-councils-circulation.trycloudflare.com/start-call', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': 'supersecret123'
+      },
+      body: JSON.stringify({ to: '+442045421340' })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      console.error(data);
+      alert('Call failed: ' + (data.error || 'unknown error'));
+      return;
+    }
+    console.log('Call started: ', data.callSid);
+    alert('Dialling...');
+  };
+</script>
