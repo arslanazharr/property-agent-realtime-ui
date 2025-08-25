@@ -24,24 +24,22 @@
 
 <!-- for elevenlabs -->
 
-<button id="call">Start Call</button>
+<button id="call" style="width: 200; height: 200; font-size: xx-large;">Start Call</button>
 <script>
   document.getElementById('call').onclick = async () => {
-    const res = await fetch('https://undergraduate-suffering-relay-viewpicture.trycloudflare.com/start-call', {
+    const url = 'https://dodge-dictionaries-councils-circulation.trycloudflare.com/start-call?to=' 
+      + encodeURIComponent('+447897384453');
+
+    const res = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': 'supersecret123'
-      },
-      body: JSON.stringify({ to: '+442045421340' })
+      headers: { 'x-api-key': 'supersecret123' }
     });
+
     const data = await res.json();
     if (!res.ok || !data.success) {
-      console.error(data);
       alert('Call failed: ' + (data.error || 'unknown error'));
       return;
     }
-    console.log('Call started: ', data.callSid);
     alert('Dialling...');
   };
 </script>
