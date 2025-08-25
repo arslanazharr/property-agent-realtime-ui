@@ -24,22 +24,104 @@
 
 <!-- for elevenlabs -->
 
-<button id="call" style="width: 200; height: 70; font-size: xx-large;">Start Call</button>
-<script>
-  document.getElementById('call').onclick = async () => {
-    const url = 'https://undergraduate-suffering-relay-viewpicture.trycloudflare.com/start-call?to=' 
-      + encodeURIComponent('+447897384453');
-
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'x-api-key': 'supersecret123' }
-    });
-
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      alert('Call failed: ' + (data.error || 'unknown error'));
-      return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UK Caller</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    alert('Dialling...');
-  };
-</script>
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      max-width: 420px;
+      width: 100%;
+    }
+    .container h2 {
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    input {
+      /* width: 100%; */
+      padding: 7px 4px 7px 4px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>AI Caller</h2>
+    <div style="display: flex; flex-direction: column;">
+      <input id="phoneInput" type="text" placeholder="Phone (+44XXXXXXXXXX)" />
+    <input id="serverInput" type="text" placeholder="Server URL (https://xxx.trycloudflare.com)" />
+    </div>
+    <button id="callBtn">Start Call</button>
+  </div>
+
+  <script>
+    function isValidUKNumber(num) {
+      return /^\+44\d{9,10}$/.test(num);
+    }
+
+    document.getElementById("callBtn").onclick = async () => {
+      const phone = document.getElementById("phoneInput").value.trim();
+      const server = document.getElementById("serverInput").value.trim();
+
+      if (!server) { alert("Enter Server URL"); return; }
+      if (!phone) { alert("Enter phone number"); return; }
+      if (!isValidUKNumber(phone)) {
+        alert("Invalid UK number! Format: +44XXXXXXXXXX");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${server}/start-call`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": "supersecret123"
+          },
+          body: JSON.stringify({ phone })
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          alert("Call failed: " + (data.error || "unknown error"));
+          return;
+        }
+        alert("Dialling... SID: " + data.callSid);
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    };
+  </script>
+</body>
+</html>
+
